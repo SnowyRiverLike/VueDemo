@@ -8,11 +8,11 @@
   </li>                                                <!--点击删除看有没有提示如果有就不能直接调用这个方法不能用delect取名它是关键字-->
 </template>
 <script>
-  import PubSub from 'PubSub'
   export default {
 //    item显示todo
     props: { // 指定了属性名和属性值的类型
       todo: Object,     /*原生的写法*/
+      deleteTodo: Function,
       index: Number
     },
 
@@ -37,8 +37,6 @@
       deleteItem () {
         if(confirm('确定删除吗')) {
           this.deleteTodo(this.index)
-         /* 发布消息*/
-          PubSub.publish('deleteTodo',this.index)
         }
       }
     }

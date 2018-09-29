@@ -7,6 +7,14 @@
 <script>
   export default {
 
+    props: { // 属性名/属性值的类型/属性的必要性
+      addTodo: {
+        type: Function,
+        required: true
+    /*    default:0      //默认值不需要*/
+      },
+    },
+
     data() {
       return {
         title: ''
@@ -28,8 +36,9 @@
           title,
           complete: false
         }
-          //触发事件（分发事件）
-         this.$emit('addTodo', todo)   /*触发事件名，传给父组件的数据，看app组件回调函数中执行的数据接受数据*/
+
+        // 添加到todos中
+        this.addTodo(todo)
 
         // 清除输入
         this.title = ''

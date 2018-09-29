@@ -1,15 +1,20 @@
 <template>
   <div class="todo-container">
     <div class="todo-wrap">
-      <todo-header :addTodo="addTodo"/>      <!--methods方法都会成为组件对象的，所以不用定义-->
-      <List :todos="todos" :deleteTodo="deleteTodo"/>    <!-- //数组里多个对象交给list显示 后传给list组件，deleteTodo逐层传递-->
-      <TodoFooter :todos="todos" :deleteComplete="deleteComplete" :selectAll="selectAll"/>
+      <todo-header @addTodo="addTodo"/>     <!--绑定事件接听，指定接听的事件名，回调函数是addTodo-->
+      <List :todos="todos" />    <!-- //数组里多个对象交给list显示 后传给list组件，-->
+      <TodoFooter :todos="todos" :deleteComplete="deleteComplete" :selectAll="selectAll">
+        <input type="checkbox" v-model="isCheck" slot="left"/>
+        <span slot="middle">已完成{{completeSize}} / 全部{{todos.length}}</span>
+        <button  slot="right" class="btn btn-danger" v-show="completeSize" @click="deleteComplete">清除已完成任务</button>
+      </TodoFooter>
     </div>
 
   </div>
 </template>
 <script>
 //引入并且注册
+import PubSub from  'pubsub-js'
   import storageUtils from './utils/storageUtils'
   import Header from './components/Header.vue'
   import List from './components/List.vue'
@@ -24,6 +29,30 @@ export default {
         todos: storageUtils.readTodos()
       }
     },
+  computed: {
+    completeSize () {    /*计算统计用函数它要return结果，                         计算reduce初始值为零*/
+      return this.todos.reduce((preTotal, todo) => preTotal + (todo.complete ? 1 : 0), 0)
+    },                       /*上一个跟当前的一个todo*/          /*加一还是不加*/
+
+    isCheck: {
+      get () { // 计算得到一个决定是否勾选的boolean值
+        return this.todos.length===this.completeSize && this.completeSize>0
+      },
+
+      set (value) { // 用户操作勾选框时调用
+        this.selectAll(value)
+      }
+    }
+  },
+     mounted () {
+       //      订阅消息
+       PubSub.subscribe('deleteTodo', (msg,index) => {
+//           接受的数据，最后删除它        /*参数不一致不能简化如果返回来也是可以的（index，msg）
+                                           // 一定要用箭头函数，this不一样，PubSub库来控制的*/
+         this.deleteTodo(index)
+       })
+     },
+
 
     methods: {
       // 添加todo
