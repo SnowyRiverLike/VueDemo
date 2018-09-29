@@ -12,6 +12,7 @@
     "dist": "serve dist"
   },
   "dependencies": {
+    "PubSub": "^3.4.0",
     "axios": "^0.17.1",
     "pubsub-js": "^1.5.7",
     "vue": "^2.5.2",

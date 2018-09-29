@@ -8,10 +8,10 @@ export default {
   // 保存todos
   saveTodos (todos) {
     localStorage.setItem(TODOS_KEY, JSON.stringify(todos))
-                     /*调用setItem保存json数据传key值跟value值      字符串变json数据保存/
+                  //调用setItem保存json数据传key值跟value值      字符串变json数据保存
   },
   // 读取todos
   readTodos () {
     return JSON.parse(localStorage.getItem(TODOS_KEY) || '[]')
-  }                           /*得到的json空数组*/
+  }                           //得到的json空数组
 }
